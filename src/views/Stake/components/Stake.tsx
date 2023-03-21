@@ -13,7 +13,7 @@ import Label from '../../../components/Label';
 import Value from '../../../components/Value';
 //import useXbombBalance from '../../../hooks/useXbombBalance';
 import useBombStats from '../../../hooks/useBombStats';
-import useApprove, {ApprovalState} from '../../../hooks/useApprove';
+import useApprove, { ApprovalState } from '../../../hooks/useApprove';
 import useModal from '../../../hooks/useModal';
 import useTokenBalance from '../../../hooks/useTokenBalance';
 import MetamaskFox from '../../../assets/img/metamask-fox.svg';
@@ -34,8 +34,6 @@ const Stake: React.FC = () => {
 
   const [approveStatus, approve] = useApprove(bombFinance.BOMB, bombFinance.contracts.xBOMB.address);
 
-
-
   const tokenBalance = useTokenBalance(bombFinance.BOMB);
   //const stakedBalance = useStakedBomb();
   const stakedBalance = useTokenBalance(bombFinance.XBOMB);
@@ -51,14 +49,11 @@ const Stake: React.FC = () => {
 
   const stakedTokenPriceInDollars = Number(bombPriceInDollars) * xbombRate;
 
-  const tokenPriceInDollars = useMemo(
-    () => {
-      return stakedTokenPriceInDollars
-        ? (Number(stakedTokenPriceInDollars) * Number(getDisplayBalance(stakedBalance))).toFixed(2).toString()
-        : null;
-    },
-    [stakedTokenPriceInDollars, stakedBalance],
-  );
+  const tokenPriceInDollars = useMemo(() => {
+    return stakedTokenPriceInDollars
+      ? (Number(stakedTokenPriceInDollars) * Number(getDisplayBalance(stakedBalance))).toFixed(2).toString()
+      : null;
+  }, [stakedTokenPriceInDollars, stakedBalance]);
   // const isOldBoardroomMember = boardroomVersion !== 'latest';
 
   const { onStake } = useStakeToBomb();

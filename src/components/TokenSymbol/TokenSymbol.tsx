@@ -12,6 +12,7 @@ import tBondLogo from '../../assets/img/bbond.png';
 import bombFtmLpLogo from '../../assets/img/bomb-bitcoin-LP.png';
 import bshareFtmLpLogo from '../../assets/img/bshare-bnb-LP.png';
 import busmBusdLpLogo from '../../assets/img/busm-busd-lp.png';
+import metaMaskLogo from '../../assets/img/metamask-fox.svg';
 
 
 import bnbLogo from '../../assets/img/bnb.png';
@@ -37,6 +38,7 @@ const logosBySymbol: {[title: string]: string} = {
   BTCB: btcLogo,
   BTC: btcLogo,
   SVL: bnbLogo,
+  FOX: metaMaskLogo,
   'BOMB-BNB-LP': bombFtmLpLogo,
   'BOMB-BTCB-LP': bombFtmLpLogo,
     '80BOMB-20BTCB-LP': bombFtmLpLogo,
