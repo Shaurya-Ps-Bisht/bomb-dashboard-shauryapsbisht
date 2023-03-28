@@ -10,8 +10,8 @@ const MyComponent = createGlobalStyle`
 body{
   height: 100vh; 
   background-image: url(${bg1}), url(${bg2}), url(${bg3}); 
-  background-size: cover , 40% , cover !important;
-  background-position: center, top 100%, center; 
+  background-size: cover, 50% , cover !important;
+  background-position: 50% 50%, 50% 100%, center !important; 
   background-repeat: no-repeat; 
 }
 `;

@@ -1,27 +1,13 @@
-import React, { useMemo, useContext } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 
-// import Button from '../../../components/Button';
-import { Button, Card, CardContent, Typography } from '@material-ui/core';
-// import Card from '../../../components/Card';
-// import CardContent from '../../../components/CardContent';
-import CardIcon from '../../../components/CardIcon';
-import CountUp from 'react-countup';
-import { AddIcon, RemoveIcon } from '../../../components/icons';
-import FlashOnIcon from '@material-ui/icons/FlashOn';
-import IconButton from '../../../components/IconButton';
-import Bombbtctb from '../../../assets/img/bomb-bitcoin-LP.png';
-import Bsharebtcb from '../../../assets/img/bshare-bnb-LP.png';
-//import Label from '../../../components/Label';
-import Value from '../../../components/Value';
-import { ThemeContext } from 'styled-components';
+import { Button } from '@material-ui/core';
 
-import useApprove, { ApprovalState } from '../../../hooks/useApprove';
+import Value from '../../../components/Value';
+
 import useModal from '../../../hooks/useModal';
 import useStake from '../../../hooks/useStake';
-import useZap from '../../../hooks/useZap';
 import useStakedBalance from '../../../hooks/useStakedBalance';
-import useStakedTokenPriceInDollars from '../../../hooks/useStakedTokenPriceInDollars';
 import useTokenBalance from '../../../hooks/useTokenBalance';
 import useWithdraw from '../../../hooks/useWithdraw';
 
@@ -29,102 +15,108 @@ import { getDisplayBalance } from '../../../utils/formatBalance';
 
 import DepositModal from '../../Bank/components/DepositModal';
 import WithdrawModal from '../../Bank/components/WithdrawModal';
-// import ZapModal from './ZapModal';
-import TokenSymbol from '../../../components/TokenSymbol';
-import { Bank } from '../../../bomb-finance';
 import useHarvest from '../../../hooks/useHarvest';
 
 import useBank from '../../../hooks/useBank';
 import useStatsForPool from '../../../hooks/useStatsForPool';
-import useRedeem from '../../../hooks/useRedeem';
-import { useWallet } from 'use-wallet';
+
 import useEarnings from '../../../hooks/useEarnings';
+import DepositIcon from '../../../assets/img/upArr.png';
+import WithdrawIcon from '../../../assets/img/downArr.png';
+import BoardroomIcon from '../../../assets/img/bshares.png';
 
-interface StakeProps {
-  bank: Bank;
-}
-
-const BomFarmsCard2 = () => {
-  const bank1 = useBank('BombBtcbLPBShareRewardPool');
-  const bank2 = useBank('BshareBnbLPBShareRewardPool');
-  const tokenBalance2 = useTokenBalance(bank2.depositToken);
-  const stakedBalance2 = useStakedBalance(bank2.contract, bank2.poolId);
+const BomFarmsCard2 = ({ bankName, myString, iconLoc }: { bankName: string; myString: string; iconLoc: string }) => {
+  const bank = useBank(bankName);
+  const tokenBalance = useTokenBalance(bank.depositToken);
+  const stakedBalance = useStakedBalance(bank.contract, bank.poolId);
 
   //   const { onStake } = useStake(bank1);
   //   const onStake1 = onStake;
   //   const { onWithdraw } = useWithdraw(bank1);
   //   const onWithdraw1 = onWithdraw;
 
-  const { onStake } = useStake(bank2);
-  const { onWithdraw } = useWithdraw(bank2);
+  const { onStake } = useStake(bank);
+  const { onWithdraw } = useWithdraw(bank);
+  const earnings = useEarnings(bank.contract, bank.earnTokenName, bank.poolId);
+  const { onReward } = useHarvest(bank);
 
-  const { account } = useWallet();
-  let statsOnPool = useStatsForPool(bank1);
-
-  const { onRedeem } = useRedeem(bank2);
-  const earnings = useEarnings(bank2.contract, bank2.earnTokenName, bank2.poolId);
-  const { onReward } = useHarvest(bank2);
-
-  let statsOnPool2 = useStatsForPool(bank2);
+  let statsOnPool = useStatsForPool(bank);
 
   const [onPresentDeposit, onDismissDeposit] = useModal(
     <DepositModal
-      max={tokenBalance2}
-      decimals={bank2.depositToken.decimal}
+      max={tokenBalance}
+      decimals={bank.depositToken.decimal}
       onConfirm={(amount) => {
         if (Number(amount) <= 0 || isNaN(Number(amount))) return;
         onStake(amount);
         onDismissDeposit();
       }}
-      tokenName={bank2.depositTokenName}
+      tokenName={bank.depositTokenName}
     />,
   );
 
   const [onPresentWithdraw, onDismissWithdraw] = useModal(
     <WithdrawModal
-      max={stakedBalance2}
-      decimals={bank2.depositToken.decimal}
+      max={stakedBalance}
+      decimals={bank.depositToken.decimal}
       onConfirm={(amount) => {
         if (Number(amount) <= 0 || isNaN(Number(amount))) return;
         onWithdraw(amount);
         onDismissWithdraw();
       }}
-      tokenName={bank2.depositTokenName}
+      tokenName={bank.depositTokenName}
     />,
   );
 
   return (
     <CardContainer>
       <CardHeader>
-        <img src={Bsharebtcb} style={{ width: '40px', height: '40px' }} />
-        <CardTitle>Boardroom</CardTitle>
-      </CardHeader>
-
-      <CardRow style={{ borderBottom: '0.5px solid rgba(195, 197, 203, 0.75)' }}>
-        <div>
-          <CardSubTitle>Stake BSHARE and earn BOMB every epoch</CardSubTitle>
-        </div>
-        <div>
+        <img src={iconLoc} style={{ width: '40px', height: '40px' }} />
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'row',
+            flexGrow: 1,
+            borderBottom: '0.5px solid rgba(195, 197, 203, 0.75)',
+          }}
+        >
+          <CardTitle>
+            {myString}
+            <div
+              style={{
+                backgroundColor: 'rgba(0, 232, 162, 0.5)',
+                boxShadow: '0px 0px 8px rgba(0, 232, 162, 0.5)',
+                display: 'inline-block',
+                gap: '10px',
+                position: 'relative',
+                justifyContent: 'center',
+                borderRadius: '3px',
+                lineHeight: '16px',
+                marginLeft: '7px',
+                paddingInline: '5px',
+              }}
+            >
+              <span style={{ color: '#FFFFFF', fontWeight: 600, fontSize: '12px', margin: 0 }}>Recommended</span>
+            </div>
+          </CardTitle>
           <CardTvl>
             TVL:
             <span style={{ fontSize: '20px' }}>
-              <CardValue>{statsOnPool2?.TVL}</CardValue>
+              {' $'}
+              {statsOnPool?.TVL}
             </span>{' '}
           </CardTvl>
         </div>
-      </CardRow>
-      <CardRow style={{ textAlign: 'right', alignContent: 'right' }}>
-        <div style={{ textAlign: 'right', alignContent: 'right' }}>Total Staked:</div>
-      </CardRow>
+      </CardHeader>
       <CardRow>
         <div>
           <CardLabel>Daily Returns </CardLabel>
-          <CardValue>{statsOnPool2?.dailyAPR}</CardValue>
+          <CardValue>{statsOnPool?.dailyAPR}</CardValue>
         </div>
         <div>
           <CardLabel>Your Stake</CardLabel>
           <CardValue style={{ fontSize: 14 }}>
-            <Value value={getDisplayBalance(stakedBalance2, bank1.depositToken.decimal)} />
+            <Value value={getDisplayBalance(stakedBalance, bank.depositToken.decimal)} />
           </CardValue>
         </div>
         <div>
@@ -133,24 +125,81 @@ const BomFarmsCard2 = () => {
             <Value value={getDisplayBalance(earnings)} />
           </CardValue>
         </div>
-        <div style={{ display: 'flex', flexDirection: 'column' }}>
-          <div style={{ display: 'flex', flexDirection: 'row' }}>
-            <IconButton onClick={onPresentWithdraw}>
-              <RemoveIcon />
-            </IconButton>
-            <IconButton
-              disabled={bank2.closedForStaking}
-              onClick={() => (bank2.closedForStaking ? null : onPresentDeposit())}
-            >
-              <AddIcon />
-            </IconButton>
-          </div>
+
+        <div style={{ display: 'flex', flexDirection: 'row' }}>
+          <button
+            disabled={bank.closedForStaking}
+            onClick={() => (bank.closedForStaking ? null : onPresentDeposit())}
+            style={{
+              boxSizing: 'border-box',
+              display: 'flex',
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              width: '107px',
+              height: '28px',
+              padding: '4px 0px 4px 8px',
+              gap: '5px',
+              border: '1px solid #FFFFFF',
+              borderRadius: '50px',
+              backgroundColor: 'transparent',
+              color: '#FFFFFF',
+              cursor: bank.closedForStaking ? 'default' : 'pointer',
+              fontSize: '15px',
+              marginLeft: '4px',
+            }}
+          >
+            Deposit
+            <img src={DepositIcon} style={{ width: '24px', height: '24px' }} />
+          </button>
+          <button
+            onClick={onPresentWithdraw}
+            style={{
+              boxSizing: 'border-box',
+              display: 'flex',
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              width: '107px',
+              height: '28px',
+              padding: '4px 0px 4px 8px',
+              gap: '5px',
+              border: '1px solid #FFFFFF',
+              borderRadius: '50px',
+              backgroundColor: 'transparent',
+              color: '#FFFFFF',
+              fontSize: '15px',
+              marginLeft: '4px',
+            }}
+          >
+            Withdraw
+            <img src={WithdrawIcon} style={{ width: '24px', height: '24px' }} />
+          </button>
           <Button
             onClick={onReward}
             disabled={earnings.eq(0)}
             className={earnings.eq(0) ? 'shinyButtonDisabled' : 'shinyButton'}
+            style={{
+              boxSizing: 'border-box',
+              display: 'flex',
+              textTransform: 'unset',
+              flexDirection: 'row',
+              justifyContent: 'center',
+              alignItems: 'center',
+              width: '148px',
+              height: '28px',
+              gap: '5px',
+              border: '1px solid #FFFFFF',
+              borderRadius: '50px',
+              backgroundColor: 'transparent',
+              color: '#FFFFFF',
+              cursor: earnings.eq(0) ? 'default' : 'pointer',
+              fontSize: '15px',
+              marginLeft: '4px',
+            }}
           >
-            Claim
+            Claim Rewards
+            <img src={BoardroomIcon} style={{ width: '20px', height: '20px' }} />
           </Button>
         </div>
       </CardRow>
@@ -159,15 +208,13 @@ const BomFarmsCard2 = () => {
 };
 
 const CardContainer = styled.div`
-  background: rgba(35, 40, 75, 0.75);
-  border: 1px solid #728cdf;
-  backdrop-filter: blur(5px);
-  border-radius: 10px;
-  padding: 24px;
+  background: transparent;
+  // backdrop-filter: blur(5px);
   color: white;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.05);
+  // box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.05);
   display: flex;
   flex-direction: column;
+  margin-top: 30px;
 `;
 
 const CardHeader = styled.div`
@@ -176,18 +223,11 @@ const CardHeader = styled.div`
 `;
 
 const CardTitle = styled.div`
-  font-family: 'Nunito' !important;
   font-style: normal !important;
   font-weight: 400 !important;
   font-size: 22px !important;
   line-height: 30px !important;
   color: #ffffff !important;
-`;
-
-const CardSubTitle = styled.div`
-  font-size: 1rem;
-  font-weight: normal;
-  margin-left: 0.5rem;
 `;
 
 const CardTvl = styled.div`
@@ -214,23 +254,4 @@ const CardValue = styled.div`
   font-weight: normal;
 `;
 
-const CardButton = styled.button`
-  font-size: 0.875rem;
-  font-weight: bold;
-  border: none;
-  border-radius: 0.25rem;
-  padding: 0.5rem;
-  margin-left: 0.5rem;
-  cursor: pointer;
-
-  &.primary {
-    background-color: #2d3748;
-    color: #fff;
-  }
-
-  &.secondary {
-    background-color: #e2e8f0;
-    color: #4a5568;
-  }
-`;
 export default BomFarmsCard2;

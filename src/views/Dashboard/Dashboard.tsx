@@ -23,6 +23,7 @@ import BomFarmsCard from './components/BomFarmsCard';
 import { Alert } from '@material-ui/lab';
 import BfcCard from './components/BfcCard';
 import BrCard from './components/BrCard';
+import BondCard from './components/BondCard';
 
 // import HomeImage from '../../assets/img/dashboard_1.jpg';
 
@@ -84,15 +85,17 @@ const Dashboard: React.FC = () => {
           <title>{TITLE}</title>
         </Helmet>
         <BfcCard />
-        <div style={{ display: 'flex', flexDirection: 'row' }}>
+        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', maxWidth: '1138px' }}>
           <FirstDiv>
             <ThreeRowBox>
+              <BoxLinkStrat href="#">Read Investment Strategy {'>'}</BoxLinkStrat>
               <BoxLinkInvest href="#">Invest Now</BoxLinkInvest>
               <Row style={{ justifyContent: 'space-between' }}>
                 <BoxLink
                   style={{
-                    flexGrow: 1,
                     display: 'flex',
+                    width: '331px',
+                    height: '40px',
                     alignItems: 'center',
                     textAlign: 'center',
                     justifyContent: 'center',
@@ -105,8 +108,9 @@ const Dashboard: React.FC = () => {
                 </BoxLink>
                 <BoxLink
                   style={{
-                    flexGrow: 1,
                     display: 'flex',
+                    width: '324px',
+                    height: '40px',
                     alignItems: 'center',
                     textAlign: 'center',
                     justifyContent: 'center',
@@ -122,10 +126,12 @@ const Dashboard: React.FC = () => {
             </ThreeRowBox>
           </FirstDiv>
           <SecondDiv>
-            <Card style={{ fontFamily: 'Nunito !important', height: 325 }}>
+            <Card style={{ height: '351px', width: '418px' }}>
               <Title
                 style={{
                   textAlign: 'left',
+                  marginLeft: '19px',
+                  marginTop: '8px',
                 }}
               >
                 Latest News
@@ -136,14 +142,19 @@ const Dashboard: React.FC = () => {
         <div>
           <BomFarmsCard />
         </div>
+        <div>
+          <BondCard />
+        </div>
       </Page>
     </Switch>
   );
 };
 const BoxLinkInvest = styled.a`
-  display: inline-block;
-  text-align: center;
-  padding: 10px 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 694px;
+  height: 40px;
   background: radial-gradient(
     59345.13% 4094144349.28% at 39511.5% -2722397851.45%,
     rgba(0, 245, 171, 0.5) 0%,
@@ -154,15 +165,27 @@ const BoxLinkInvest = styled.a`
   text-decoration: none;
   font-size: 24px;
   font-weight: bold;
+  margin-bottom: 7.5px;
+`;
+const BoxLinkStrat = styled.a`
+  display: flex;
+  width: 210px;
+  height: 20px;
+  background-color: transparent;
+  font-size: 16px;
+  font-weight: 600;
+  color: #9ee6ff;
+  margin-bottom: 15.5px;
+  margin-left: auto; ;
 `;
 const BoxLink = styled.a`
   display: inline-block;
   font-weight: 700;
+  align-items: center;
   font-size: 18px;
   color: #000000;
   text-align: center;
   text-decoration: none;
-  padding: 10px 20px;
   background: rgba(255, 255, 255, 0.5);
   border: 1px solid #728cdf;
 `;
@@ -172,14 +195,11 @@ const Wrapper = styled.div`
 `;
 
 const FirstDiv = styled.div`
-  width: 60%;
   display: flex;
   flex-direction: column;
 `;
 
-const SecondDiv = styled.div`
-  width: 40%;
-`;
+const SecondDiv = styled.div``;
 
 const Icon = styled.img`
   width: 24px;
@@ -207,14 +227,12 @@ const Card = styled.div`
   border: 1px solid #728cdf;
   backdrop-filter: blur(5px);
   border-radius: 10px;
-  padding: 24px;
   color: white;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.05);
 `;
 
 const Title = styled.div`
   text-align: center;
-  font-family: 'Nunito' !important;
   font-style: normal !important;
   font-weight: 400 !important;
   font-size: 22px !important;

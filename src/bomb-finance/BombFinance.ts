@@ -271,6 +271,24 @@ export class BombFinance {
       circulatingSupply: getDisplayBalance(tShareCirculatingSupply, this.BSHARE.decimal, 0),
     };
   }
+  async getBTCver(): Promise<TokenStat> {
+    const { BShareRewardPool } = this.contracts;
+
+    const supply = await this.BSHARE.totalSupply();
+
+    const priceInBNB = await this.getTokenPriceFromPancakeswapBTC(this.BSHARE);
+    const bombRewardPoolSupply = await this.BSHARE.balanceOf(BShareRewardPool.address);
+    const tShareCirculatingSupply = supply.sub(bombRewardPoolSupply);
+    const priceOfOneBNB = await this.getBTCBPriceFromPancakeswap();
+    const priceOfSharesInDollars = (Number(priceInBNB) * Number(priceOfOneBNB)).toFixed(2);
+
+    return {
+      tokenInFtm: priceInBNB,
+      priceInDollars: priceOfSharesInDollars,
+      totalSupply: getDisplayBalance(supply, this.BSHARE.decimal, 0),
+      circulatingSupply: getDisplayBalance(tShareCirculatingSupply, this.BSHARE.decimal, 0),
+    };
+  }
 
   async getBombStatInEstimatedTWAP(): Promise<TokenStat> {
     const { Oracle, BombRewardPool } = this.contracts;
@@ -892,7 +910,9 @@ export class BombFinance {
     const boardroomtShareBalanceOf = await this.BSHARE.balanceOf(Boardroom.address);
     const boardroomTVL = Number(getDisplayBalance(boardroomtShareBalanceOf, this.BSHARE.decimal)) * Number(BSHAREPrice);
     const realAPR = ((amountOfRewardsPerDay * 100) / boardroomTVL) * 365;
-    return realAPR;
+    return {
+      realAPR: realAPR,
+      tvlBoardroom: boardroomTVL};
   }
 
   async getBombStakeAPR() {

@@ -10,8 +10,7 @@ import CountUp from 'react-countup';
 import { AddIcon, RemoveIcon } from '../../../components/icons';
 import FlashOnIcon from '@material-ui/icons/FlashOn';
 import IconButton from '../../../components/IconButton';
-import Bombbtctb from '../../../assets/img/bomb-bitcoin-LP.png';
-import Bsharebtcb from '../../../assets/img/bshare-bnb-LP.png';
+import Bombbtcb from '../../../assets/img/bomb-bitcoin-LP.png';
 //import Label from '../../../components/Label';
 import Value from '../../../components/Value';
 import { ThemeContext } from 'styled-components';
@@ -40,120 +39,27 @@ import { useWallet } from 'use-wallet';
 import useEarnings from '../../../hooks/useEarnings';
 import BomFarmsCard2 from './BombFarmsCard2';
 import useHarvest from '../../../hooks/useHarvest';
+import Bsharebtcb from '../../../assets/img/bshare-bnb-LP.png';
 
 interface StakeProps {
   bank: Bank;
 }
 
 const BomFarmsCard = () => {
-  const bank1 = useBank('BombBtcbLPBShareRewardPool');
-  const bank2 = useBank('BshareBnbLPBShareRewardPool');
-  const tokenBalance = useTokenBalance(bank1.depositToken);
-  const stakedBalance = useStakedBalance(bank1.contract, bank1.poolId);
-
-  const { onStake } = useStake(bank1);
-  const { onWithdraw } = useWithdraw(bank1);
-  const { onReward } = useHarvest(bank1);
-
-  const { account } = useWallet();
-  const earnings = useEarnings(bank1.contract, bank1.earnTokenName, bank1.poolId);
-  const { onRedeem } = useRedeem(bank1);
-
-  let statsOnPool = useStatsForPool(bank1);
-
-  let statsOnPool2 = useStatsForPool(bank2);
-
-  const [onPresentDeposit, onDismissDeposit] = useModal(
-    <DepositModal
-      max={tokenBalance}
-      decimals={bank1.depositToken.decimal}
-      onConfirm={(amount) => {
-        if (Number(amount) <= 0 || isNaN(Number(amount))) return;
-        onStake(amount);
-        onDismissDeposit();
-      }}
-      tokenName={bank1.depositTokenName}
-    />,
-  );
-
-  const [onPresentWithdraw, onDismissWithdraw] = useModal(
-    <WithdrawModal
-      max={stakedBalance}
-      decimals={bank1.depositToken.decimal}
-      onConfirm={(amount) => {
-        if (Number(amount) <= 0 || isNaN(Number(amount))) return;
-        onWithdraw(amount);
-        onDismissWithdraw();
-      }}
-      tokenName={bank1.depositTokenName}
-    />,
-  );
+  const bank1 = useBank('');
+  const bank2 = useBank('');
 
   return (
     <CardContainer>
       <CardHeader>
         <CardTitle>Bomb Farms</CardTitle>
       </CardHeader>
+      <div>
+        <CardSubTitle>Stake your LP tokens in our farms to start earning $BSHARE</CardSubTitle>
+      </div>
 
-      <CardHeader>
-        <img src={Bombbtctb} style={{ width: '40px', height: '40px' }} />
-        <CardTitle>Boardroom</CardTitle>
-      </CardHeader>
-
-      <CardRow style={{ borderBottom: '0.5px solid rgba(195, 197, 203, 0.75)' }}>
-        <div>
-          <CardSubTitle>Stake BSHARE and earn BOMB every epoch</CardSubTitle>
-        </div>
-        <div>
-          <CardTvl>
-            TVL:
-            <span style={{ fontSize: '20px' }}>
-              <CardValue>{statsOnPool?.TVL}</CardValue>
-            </span>{' '}
-          </CardTvl>
-        </div>
-      </CardRow>
-      <CardRow style={{ textAlign: 'right', alignContent: 'right' }}>
-        <div style={{ textAlign: 'right', alignContent: 'right' }}>Total Staked:</div>
-      </CardRow>
-      <CardRow>
-        <div>
-          <CardLabel>Daily Returns </CardLabel>
-          <CardValue>{statsOnPool?.dailyAPR}</CardValue>
-        </div>
-        <div>
-          <CardLabel>Your Stake</CardLabel>
-          <CardValue>
-            <Value value={getDisplayBalance(stakedBalance, bank1.depositToken.decimal)} />
-          </CardValue>
-        </div>
-        <div>
-          <CardLabel>Earned</CardLabel>
-          <CardValue><Value value={getDisplayBalance(earnings)} /></CardValue>
-        </div>
-        <div style={{ display: 'flex', flexDirection: 'column' }}>
-          <div style={{ display: 'flex', flexDirection: 'row' }}>
-            <IconButton onClick={onPresentWithdraw}>
-              <RemoveIcon />
-            </IconButton>
-            <IconButton
-              disabled={bank1.closedForStaking}
-              onClick={() => (bank1.closedForStaking ? null : onPresentDeposit())}
-            >
-              <AddIcon />
-            </IconButton>
-          </div>
-          <Button
-            onClick={onReward}
-            disabled={earnings.eq(0)}
-            className={earnings.eq(0) ? 'shinyButtonDisabled' : 'shinyButton'}
-          >
-            Claim
-          </Button>
-        </div>
-      </CardRow>
-
-      <BomFarmsCard2 />
+      <BomFarmsCard2 bankName="BombBtcbLPBShareRewardPool" myString="BOMB-BTCB" iconLoc={Bombbtcb} />
+      <BomFarmsCard2 bankName="BshareBnbLPBShareRewardPool" myString="BSHARE-BTCB" iconLoc={Bsharebtcb} />
     </CardContainer>
   );
 };
@@ -168,6 +74,7 @@ const CardContainer = styled.div`
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.05);
   display: flex;
   flex-direction: column;
+  width: 1090px;
 `;
 
 const CardHeader = styled.div`
@@ -176,7 +83,6 @@ const CardHeader = styled.div`
 `;
 
 const CardTitle = styled.div`
-  font-family: 'Nunito' !important;
   font-style: normal !important;
   font-weight: 400 !important;
   font-size: 22px !important;
@@ -187,7 +93,6 @@ const CardTitle = styled.div`
 const CardSubTitle = styled.div`
   font-size: 1rem;
   font-weight: normal;
-  margin-left: 0.5rem;
 `;
 
 const CardTvl = styled.div`

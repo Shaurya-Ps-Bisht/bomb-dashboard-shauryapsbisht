@@ -106,7 +106,7 @@ const Boardroom = () => {
                 <Card className={classes.gridItem}>
                   <CardContent align="center">
                     <Typography style={{ textTransform: 'uppercase', color: '#f9d749' }}>APR</Typography>
-                    <Typography>{boardroomAPR.toFixed(2)}%</Typography>
+                    <Typography>{boardroomAPR.realAPR.toFixed(2)}%</Typography>
                   </CardContent>
                 </Card>
               </Grid>
