@@ -1,32 +1,8 @@
 import styled from 'styled-components';
 import React, { useMemo, useCallback } from 'react';
-import CountUp from 'react-countup';
-import useTotalValueLocked from '../../../hooks/useTotalValueLocked';
 import BBondIcon from '../../../assets/img/bbond.png';
-import DepositIcon from '../../../assets/img/upArr.png';
-import WithdrawIcon from '../../../assets/img/downArr.png';
 import useBombFinance from '../../../hooks/useBombFinance';
-import IconButton from '../../../components/IconButton';
-import useWithdrawCheck from '../../../hooks/boardroom/useWithdrawCheck';
-import useModal from '../../../hooks/useModal';
-import Value from '../../../components/Value';
-import DepositModal from '../../Boardroom/components/DepositModal';
-import useStakedBalanceOnBoardroom from '../../../hooks/useStakedBalanceOnBoardroom';
-import WithdrawModal from '../../Boardroom/components/WithdrawModal';
 import useTokenBalance from '../../../hooks/useTokenBalance';
-import useStakeToBoardroom from '../../../hooks/useStakeToBoardroom';
-import useWithdrawFromBoardroom from '../../../hooks/useWithdrawFromBoardroom';
-import useTotalStakedOnBoardroom from '../../../hooks/useTotalStakedOnBoardroom';
-
-import { Box, Button, Card, CardContent, Typography } from '@material-ui/core';
-import TokenSymbol from '../../../components/TokenSymbol';
-import Label from '../../../components/Label';
-import CardIcon from '../../../components/CardIcon';
-import useClaimRewardTimerBoardroom from '../../../hooks/boardroom/useClaimRewardTimerBoardroom';
-import useClaimRewardCheck from '../../../hooks/boardroom/useClaimRewardCheck';
-import useHarvestFromBoardroom from '../../../hooks/useHarvestFromBoardroom';
-import useEarningsOnBoardroom from '../../../hooks/useEarningsOnBoardroom';
-import useBombStats from '../../../hooks/useBombStats';
 import { getDisplayBalance } from '../../../utils/formatBalance';
 import useBondsPurchasable from '../../../hooks/useBondsPurchasable';
 import { BOND_REDEEM_PRICE, BOND_REDEEM_PRICE_BN } from '../../../bomb-finance/constants';
@@ -34,12 +10,6 @@ import useCashPriceInLastTWAP from '../../../hooks/useCashPriceInLastTWAP';
 import useBondStats from '../../../hooks/useBondStats';
 import BondCardButton from './BondCardButton';
 import { useTransactionAdder } from '../../../state/transactions/hooks';
-
-import useApprove, { ApprovalState } from '../../../hooks/useApprove';
-import UnlockWallet from '../../../components/UnlockWallet';
-import { useWallet } from 'use-wallet';
-import ExchangeModal from '../../Bond/components/ExchangeModal';
-import useCatchError from '../../../hooks/useCatchError';
 
 const BondCard = () => {
   const bombFinance = useBombFinance();
@@ -104,11 +74,12 @@ const BondCard = () => {
               flexDirection: 'row',
               justifyContent: 'space-between',
               borderBottom: '0.5px solid rgba(195, 197, 203, 0.75)',
+              marginBottom: '10px',
             }}
           >
             <div style={{ display: 'flex', flexDirection: 'column' }}>
               <span style={{ display: 'block', fontSize: '16px', fontWeight: '600' }}>Purchase BBond</span>
-              <span>
+              <span style={{ marginBottom: '8px', fontWeight: '300px' }}>
                 {!isBondPurchasable
                   ? 'BOMB is over peg'
                   : getDisplayBalance(bondsPurchasable, 18, 4) + ' BBOND available for purchase'}
@@ -127,10 +98,16 @@ const BondCard = () => {
               }
               onExchange={handleBuyBonds}
               disabled={!bondStat || isBondRedeemable}
+              type="purchase"
             />
           </div>
-          <div style={{ display: 'flex', flexDirection: 'row' }}>
-            <div>Redeem Bomb</div>
+          <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
+              <span style={{ display: 'block', fontSize: '16px', fontWeight: '600' }}>Redeem Bomb</span>
+              <span style={{ marginBottom: '8px', fontWeight: '300px' }}>
+                {!isBondRedeemable ? `Enabled when 10,000 BOMB > ${BOND_REDEEM_PRICE}BTC` : null}
+              </span>
+            </div>
             <div>
               <BondCardButton
                 action="Redeem"
@@ -142,6 +119,7 @@ const BondCard = () => {
                 onExchange={handleRedeemBonds}
                 disabled={!bondStat || bondBalance.eq(0) || !isBondRedeemable}
                 disabledDescription={!isBondRedeemable ? `Enabled when 10,000 BOMB > ${BOND_REDEEM_PRICE}BTC` : null}
+                type="redeem"
               />
             </div>
           </div>
@@ -165,7 +143,7 @@ const CardContainer = styled.div`
   flex-direction: column;
   width: 1090px;
   height: 202px;
-  margin-top: 7.5px;
+  margin-top: 20.5px;
   margin-bottom: 27.5px;
 `;
 

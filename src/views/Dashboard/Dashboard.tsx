@@ -1,26 +1,18 @@
 import React, { useCallback, useMemo } from 'react';
 import Page from '../../components/Page';
-import { createGlobalStyle } from 'styled-components';
-import { Route, Switch, useRouteMatch } from 'react-router-dom';
-import PageHeader from '../../components/PageHeader';
-import ExchangeCard from './components/ExchangeCard';
+import { Switch, useRouteMatch } from 'react-router-dom';
 import styled from 'styled-components';
-import Spacer from '../../components/Spacer';
 import useBondStats from '../../hooks/useBondStats';
-//import useBombStats from '../../hooks/useBombStats';
 import useBombFinance from '../../hooks/useBombFinance';
 import useCashPriceInLastTWAP from '../../hooks/useCashPriceInLastTWAP';
 import { useTransactionAdder } from '../../state/transactions/hooks';
-import ExchangeStat from './components/ExchangeStat';
 import useTokenBalance from '../../hooks/useTokenBalance';
 import useBondsPurchasable from '../../hooks/useBondsPurchasable';
-import { getDisplayBalance } from '../../utils/formatBalance';
-import { BOND_REDEEM_PRICE, BOND_REDEEM_PRICE_BN } from '../../bomb-finance/constants';
+import { BOND_REDEEM_PRICE_BN } from '../../bomb-finance/constants';
 import { ReactComponent as SomeIcon } from '../../assets/img/why.svg';
 import discordIcon from '../../assets/img/discordDISCORD.svg';
 import BomFarmsCard from './components/BomFarmsCard';
 
-import { Alert } from '@material-ui/lab';
 import BfcCard from './components/BfcCard';
 import BrCard from './components/BrCard';
 import BondCard from './components/BondCard';
@@ -28,7 +20,6 @@ import BondCard from './components/BondCard';
 // import HomeImage from '../../assets/img/dashboard_1.jpg';
 
 import Background_dash from './components/Dashboard_background';
-import { Grid, Box } from '@material-ui/core';
 import { Helmet } from 'react-helmet';
 
 // const BackgroundImage = createGlobalStyle`
@@ -94,7 +85,7 @@ const Dashboard: React.FC = () => {
                 <BoxLink
                   style={{
                     display: 'flex',
-                    width: '331px',
+                    width: '335px',
                     height: '40px',
                     alignItems: 'center',
                     textAlign: 'center',
@@ -109,7 +100,7 @@ const Dashboard: React.FC = () => {
                 <BoxLink
                   style={{
                     display: 'flex',
-                    width: '324px',
+                    width: '335px',
                     height: '40px',
                     alignItems: 'center',
                     textAlign: 'center',

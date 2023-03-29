@@ -1,9 +1,6 @@
 import React, { useCallback, useMemo, useState, useEffect } from 'react';
-import { createGlobalStyle } from 'styled-components';
-import { Route, Switch, useRouteMatch } from 'react-router-dom';
 import styled from 'styled-components';
 import CountUp from 'react-countup';
-import Home from '../../Home/Home';
 import useTotalValueLocked from '../../../hooks/useTotalValueLocked';
 import { roundAndFormatNumber } from '../../../0x';
 import useBombStats from '../../../hooks/useBombStats';
@@ -16,8 +13,8 @@ import moment from 'moment';
 import ProgressCountdown from '../../Boardroom/components/ProgressCountdown';
 import useTreasuryAllocationTimes from '../../../hooks/useTreasuryAllocationTimes';
 import useCashPriceInEstimatedTWAP from '../../../hooks/useCashPriceInEstimatedTWAP';
+import useCashPriceInLastTWAP from '../../../hooks/useCashPriceInLastTWAP';
 
-import { Alert } from '@material-ui/lab';
 function formatNumber(num: number): string {
   if (num >= 1000000) {
     return (num / 1000000).toFixed(2) + 'M';
@@ -32,16 +29,8 @@ const BfcCard = () => {
   const cashStat = useCashPriceInEstimatedTWAP();
   const scalingFactor = useMemo(() => (cashStat ? Number(cashStat.priceInDollars).toFixed(4) : null), [cashStat]);
   const currentEpoch = useCurrentEpoch();
-
-  const [scalingFactorOld, setScalingFactorOld] = useState<number | null>(null);
-  const [scalingFactorOldDisplay, setScalingFactorOldDisplay] = useState<number | null>(null);
-
-  useEffect(() => {
-    if (scalingFactorOld !== Number(scalingFactor)) {
-      setScalingFactorOldDisplay(scalingFactorOld);
-      setScalingFactorOld(Number(scalingFactor));
-    }
-  }, [scalingFactor]);
+  const cashPrice = useCashPriceInLastTWAP();
+  const bondScale = (Number(cashPrice) / 100000000000000).toFixed(4);
 
   const TVL = useTotalValueLocked();
   //   const bombFtmLpStats = useLpStatsBTC('BOMB-BTCB-LP');
@@ -224,7 +213,7 @@ const BfcCard = () => {
 
               <InnerNumberWrapper>
                 <NumberValue>Last EPOCH TWAP: </NumberValue>
-                <NumberLabel>{scalingFactor}</NumberLabel>
+                <NumberLabel>{bondScale}</NumberLabel>
               </InnerNumberWrapper>
             </NumberWrapper>
           </div>

@@ -3,13 +3,12 @@ import React, { useMemo } from 'react';
 import CountUp from 'react-countup';
 import useTotalValueLocked from '../../../hooks/useTotalValueLocked';
 import BoardroomIcon from '../../../assets/img/bshares.png';
+import BombIcon from '../../../assets/img/bomb.png';
 import DepositIcon from '../../../assets/img/upArr.png';
 import WithdrawIcon from '../../../assets/img/downArr.png';
 import useBombFinance from '../../../hooks/useBombFinance';
-import IconButton from '../../../components/IconButton';
 import useWithdrawCheck from '../../../hooks/boardroom/useWithdrawCheck';
 import useModal from '../../../hooks/useModal';
-import Value from '../../../components/Value';
 import DepositModal from '../../Boardroom/components/DepositModal';
 import useStakedBalanceOnBoardroom from '../../../hooks/useStakedBalanceOnBoardroom';
 import WithdrawModal from '../../Boardroom/components/WithdrawModal';
@@ -17,11 +16,7 @@ import useTokenBalance from '../../../hooks/useTokenBalance';
 import useStakeToBoardroom from '../../../hooks/useStakeToBoardroom';
 import useWithdrawFromBoardroom from '../../../hooks/useWithdrawFromBoardroom';
 import useTotalStakedOnBoardroom from '../../../hooks/useTotalStakedOnBoardroom';
-
-import { Box, Button, Card, CardContent, Typography } from '@material-ui/core';
-import TokenSymbol from '../../../components/TokenSymbol';
-import Label from '../../../components/Label';
-import CardIcon from '../../../components/CardIcon';
+import {Button } from '@material-ui/core';
 import useClaimRewardTimerBoardroom from '../../../hooks/boardroom/useClaimRewardTimerBoardroom';
 import useClaimRewardCheck from '../../../hooks/boardroom/useClaimRewardCheck';
 import useHarvestFromBoardroom from '../../../hooks/useHarvestFromBoardroom';
@@ -29,11 +24,11 @@ import useEarningsOnBoardroom from '../../../hooks/useEarningsOnBoardroom';
 import useBombStats from '../../../hooks/useBombStats';
 import { getDisplayBalance } from '../../../utils/formatBalance';
 import useFetchBoardroomAPR from '../../../hooks/useFetchBoardroomAPR';
+import useStakedTokenPriceInDollars from '../../../hooks/useStakedTokenPriceInDollars';
 
 const BoardroomCard = () => {
   const { onStake } = useStakeToBoardroom();
   const { onWithdraw } = useWithdrawFromBoardroom();
-  const TVL = useTotalValueLocked();
   const stakedBalance = useStakedBalanceOnBoardroom();
   const totalStaked = useTotalStakedOnBoardroom();
   const bombFinance = useBombFinance();
@@ -71,8 +66,16 @@ const BoardroomCard = () => {
     () => (bombStats ? Number(bombStats.priceInDollars).toFixed(2) : null),
     [bombStats],
   );
-
   const earnedInDollars = (Number(tokenPriceInDollars) * Number(getDisplayBalance(earnings))).toFixed(2);
+
+  const stakedTokenPriceInDollars = useStakedTokenPriceInDollars('BSHARE', bombFinance.BSHARE);
+  const tokenPriceInDollars2 = useMemo(
+    () =>
+      stakedTokenPriceInDollars
+        ? (Number(stakedTokenPriceInDollars) * Number(getDisplayBalance(stakedBalance))).toFixed(2).toString()
+        : null,
+    [stakedTokenPriceInDollars, stakedBalance],
+  );
 
   const { from, to } = useClaimRewardTimerBoardroom();
   return (
@@ -129,11 +132,19 @@ const BoardroomCard = () => {
         </div>
         <div>
           <CardLabel>Your Stake</CardLabel>
-          <CardValue>{getDisplayBalance(stakedBalance)}</CardValue>
+          <CardValue>
+            <img src={BoardroomIcon} style={{ width: '14px', height: '14px' }} />
+            {getDisplayBalance(stakedBalance)}
+          </CardValue>
+          <CardValue>{`≈ $${tokenPriceInDollars2}`}</CardValue>
         </div>
         <div>
           <CardLabel>Earned</CardLabel>
-          <CardValue>{getDisplayBalance(earnings)}</CardValue>
+          <CardValue>
+            <img src={BombIcon} style={{ width: '14px', height: '14px' }} />
+            {getDisplayBalance(earnings)}
+          </CardValue>
+          <CardValue>{`≈ $${earnedInDollars}`}</CardValue>
         </div>
         <div style={{ display: 'flex', flexDirection: 'column' }}>
           <div style={{ display: 'flex', flexDirection: 'row' }}>

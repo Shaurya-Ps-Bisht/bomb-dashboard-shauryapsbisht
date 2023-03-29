@@ -1,29 +1,23 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import styled from 'styled-components';
-
 import { Button } from '@material-ui/core';
-
-import Value from '../../../components/Value';
-
 import useModal from '../../../hooks/useModal';
 import useStake from '../../../hooks/useStake';
 import useStakedBalance from '../../../hooks/useStakedBalance';
 import useTokenBalance from '../../../hooks/useTokenBalance';
 import useWithdraw from '../../../hooks/useWithdraw';
-
 import { getDisplayBalance } from '../../../utils/formatBalance';
-
 import DepositModal from '../../Bank/components/DepositModal';
 import WithdrawModal from '../../Bank/components/WithdrawModal';
 import useHarvest from '../../../hooks/useHarvest';
-
 import useBank from '../../../hooks/useBank';
 import useStatsForPool from '../../../hooks/useStatsForPool';
-
 import useEarnings from '../../../hooks/useEarnings';
 import DepositIcon from '../../../assets/img/upArr.png';
 import WithdrawIcon from '../../../assets/img/downArr.png';
 import BoardroomIcon from '../../../assets/img/bshares.png';
+import useBombStats from '../../../hooks/useBombStats';
+import useShareStats from '../../../hooks/usebShareStats';
 
 const BomFarmsCard2 = ({ bankName, myString, iconLoc }: { bankName: string; myString: string; iconLoc: string }) => {
   const bank = useBank(bankName);
@@ -39,6 +33,19 @@ const BomFarmsCard2 = ({ bankName, myString, iconLoc }: { bankName: string; mySt
   const { onWithdraw } = useWithdraw(bank);
   const earnings = useEarnings(bank.contract, bank.earnTokenName, bank.poolId);
   const { onReward } = useHarvest(bank);
+  const bombStats = useBombStats();
+  const tShareStats = useShareStats();
+  const tokenStats = bank.earnTokenName === 'BSHARE' ? tShareStats : bombStats;
+  const tokenPriceInDollars = useMemo(
+    () => (tokenStats ? Number(tokenStats.priceInDollars).toFixed(2) : null),
+    [tokenStats],
+  );
+
+  const stakedEarnedInDollars = (
+    Number(tokenPriceInDollars) * Number(getDisplayBalance(stakedBalance, bank.depositToken.decimal))
+  ).toFixed(2);
+
+  const earnedInDollars = (Number(tokenPriceInDollars) * Number(getDisplayBalance(earnings))).toFixed(2);
 
   let statsOnPool = useStatsForPool(bank);
 
@@ -115,15 +122,23 @@ const BomFarmsCard2 = ({ bankName, myString, iconLoc }: { bankName: string; mySt
         </div>
         <div>
           <CardLabel>Your Stake</CardLabel>
-          <CardValue style={{ fontSize: 14 }}>
-            <Value value={getDisplayBalance(stakedBalance, bank.depositToken.decimal)} />
+          <CardValue>
+            {/* <Value value= />
+             */}
+            <img src={iconLoc} style={{ width: '14px', height: '14px' }} />
+            {getDisplayBalance(stakedBalance, bank.depositToken.decimal)}
           </CardValue>
+          <CardValue>{`≈ $${earnedInDollars}`}</CardValue>{' '}
         </div>
         <div>
           <CardLabel>Earned</CardLabel>
           <CardValue>
-            <Value value={getDisplayBalance(earnings)} />
+            {/* <Value value= />
+             */}
+            <img src={BoardroomIcon} style={{ width: '14px', height: '14px' }} />
+            {getDisplayBalance(earnings)}
           </CardValue>
+          <CardValue>{`≈ $${stakedEarnedInDollars}`}</CardValue>
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'row' }}>
@@ -244,9 +259,9 @@ const CardRow = styled.div`
 `;
 
 const CardLabel = styled.div`
-  font-size: 0.75rem;
-  font-weight: normal;
-  color: #a0aec0;
+  font-size: 14px;
+  font-weight: 400;
+  color: #ffffff;
 `;
 
 const CardValue = styled.div`

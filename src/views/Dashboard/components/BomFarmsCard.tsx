@@ -1,58 +1,73 @@
 import React, { useMemo, useContext } from 'react';
 import styled from 'styled-components';
-
-// import Button from '../../../components/Button';
-import { Button, Card, CardContent, Typography } from '@material-ui/core';
-// import Card from '../../../components/Card';
-// import CardContent from '../../../components/CardContent';
-import CardIcon from '../../../components/CardIcon';
-import CountUp from 'react-countup';
-import { AddIcon, RemoveIcon } from '../../../components/icons';
-import FlashOnIcon from '@material-ui/icons/FlashOn';
-import IconButton from '../../../components/IconButton';
 import Bombbtcb from '../../../assets/img/bomb-bitcoin-LP.png';
-//import Label from '../../../components/Label';
-import Value from '../../../components/Value';
-import { ThemeContext } from 'styled-components';
-
-import useApprove, { ApprovalState } from '../../../hooks/useApprove';
-import useModal from '../../../hooks/useModal';
-import useStake from '../../../hooks/useStake';
-import useZap from '../../../hooks/useZap';
-import useStakedBalance from '../../../hooks/useStakedBalance';
-import useStakedTokenPriceInDollars from '../../../hooks/useStakedTokenPriceInDollars';
-import useTokenBalance from '../../../hooks/useTokenBalance';
-import useWithdraw from '../../../hooks/useWithdraw';
-
-import { getDisplayBalance } from '../../../utils/formatBalance';
-
-import DepositModal from '../../Bank/components/DepositModal';
-import WithdrawModal from '../../Bank/components/WithdrawModal';
-// import ZapModal from './ZapModal';
-import TokenSymbol from '../../../components/TokenSymbol';
 import { Bank } from '../../../bomb-finance';
-
-import useBank from '../../../hooks/useBank';
-import useStatsForPool from '../../../hooks/useStatsForPool';
-import useRedeem from '../../../hooks/useRedeem';
-import { useWallet } from 'use-wallet';
+import { Button } from '@material-ui/core';
 import useEarnings from '../../../hooks/useEarnings';
+import useBank from '../../../hooks/useBank';
 import BomFarmsCard2 from './BombFarmsCard2';
-import useHarvest from '../../../hooks/useHarvest';
+import BoardroomIcon from '../../../assets/img/bshares.png';
 import Bsharebtcb from '../../../assets/img/bshare-bnb-LP.png';
+import useHarvest from '../../../hooks/useHarvest';
+import { getDisplayBalance } from '../../../utils/formatBalance';
 
 interface StakeProps {
   bank: Bank;
 }
 
-const BomFarmsCard = () => {
-  const bank1 = useBank('');
-  const bank2 = useBank('');
+const CorrectHarvest = (bankName: string) => {
+  const { onReward } = useHarvest(useBank(bankName));
+  return onReward;
+};
 
+const CheckEarnings = (bankName: string) => {
+  const bank = useBank(bankName);
+  const earnings = useEarnings(bank.contract, bank.earnTokenName, bank.poolId);
+  if (Number(getDisplayBalance(earnings)) === 0) {
+    return 0;
+  }
+};
+
+const BomFarmsCard = () => {
+  const disableCheck = CheckEarnings('BombBtcbLPBShareRewardPool') + CheckEarnings('BshareBnbLPBShareRewardPool');
   return (
     <CardContainer>
-      <CardHeader>
+      <CardHeader
+        style={{
+          display: 'flex',
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+        }}
+      >
         <CardTitle>Bomb Farms</CardTitle>
+        <Button
+          onClick={() => {
+            CorrectHarvest('BombBtcbLPBShareRewardPool');
+            CorrectHarvest('BshareBnbLPBShareRewardPool');
+          }}
+          disabled={disableCheck === 0}
+          className={disableCheck === 0 ? 'shinyButtonDisabled' : 'shinyButton'}
+          style={{
+            boxSizing: 'border-box',
+            display: 'flex',
+            textTransform: 'unset',
+            flexDirection: 'row',
+            justifyContent: 'center',
+            alignItems: 'center',
+            width: '148px',
+            height: '28px',
+            gap: '5px',
+            border: '1px solid #FFFFFF',
+            borderRadius: '50px',
+            backgroundColor: 'transparent',
+            color: '#FFFFFF',
+            fontSize: '15px',
+            marginLeft: '4px',
+          }}
+        >
+          Claim All
+          <img src={BoardroomIcon} style={{ width: '20px', height: '20px' }} />
+        </Button>
       </CardHeader>
       <div>
         <CardSubTitle>Stake your LP tokens in our farms to start earning $BSHARE</CardSubTitle>
