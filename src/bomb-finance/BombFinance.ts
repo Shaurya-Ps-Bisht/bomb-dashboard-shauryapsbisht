@@ -343,7 +343,7 @@ export class BombFinance {
    * @returns
    */
   async getPoolAPRs(bank: Bank): Promise<PoolStats> {
-    if (this.myAccount === undefined) return;
+    // if (this.myAccount === undefined) return;
     let depositToken = bank.depositToken;
     // if (depositToken.symbol === '80BOMB-20BTCB-LP' || depositToken.symbol === '80BSHARE-20WBNB-LP') {
     //   const temp = 'TBD';
